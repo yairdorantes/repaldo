@@ -3,7 +3,7 @@ from importlib.metadata import metadata
 
 import json
 from django.views import View
-from .models import Cards, UserModel, ShortsV2, AnswersForShortsV2
+from .models import Cards, Post, UserModel, ShortsV2, AnswersForShortsV2
 from rest_framework import viewsets
 from .serializers import ShortsV2Serializer, AnswerShortSerializer
 
@@ -169,4 +169,18 @@ class userToPremium(View):
         user.premium = True
         user.save()
         data = {'message': 'user is now premium!'}
+        return JsonResponse(data)
+
+
+class PostView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        posts = list(Post.objects.values())
+        if len(posts) > 0:
+            data = {'message': 'success', 'Posts': posts}
+        else:
+            data = {'message': 'post not found'}
         return JsonResponse(data)

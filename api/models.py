@@ -1,4 +1,7 @@
 
+from email.policy import default
+from pyexpat import model
+from unicodedata import category
 from django.db import models
 # Create your models here.
 from django.contrib.auth.models import AbstractUser
@@ -53,6 +56,35 @@ class AnswersForShortsV2(models.Model):
 
     def __str__(self):
         return self.answer_text + " " + " - " + self.parent_question.short_name
+
+
+class CategoriaPost(models.Model):
+    name = models.CharField(
+        max_length=100, null=False, unique=False, verbose_name='Category Post')
+
+    class meta:
+        verbose_name = 'Category'
+       # ordering = ['id']
+
+    def __str__(self):
+        return self.name
+
+
+class Post(models.Model):
+    categoria = models.ForeignKey(CategoriaPost, on_delete=models.CASCADE)
+    image = models.FileField(upload_to="PostImage", verbose_name="Post image")
+    title = models.CharField(max_length=500, verbose_name="Post title")
+    intro = models.CharField(max_length=500, verbose_name="Post intro")
+    content = models.TextField(blank=True, verbose_name="Post content")
+    image_src = models.URLField(
+        default="http://127.0.0.1:8000/", verbose_name="post image source ")
+
+    def delete(self, *args, **kwargs):
+        self.image.delete()
+        super().delete(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
 
 
 """

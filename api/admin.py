@@ -1,13 +1,6 @@
 from django.contrib import admin
-from .models import UserModel, Cards, ShortsV2, AnswersForShortsV2
-
-admin.site.register(UserModel)
-admin.site.register(Cards)
-admin.site.register(ShortsV2)
-admin.site.register(AnswersForShortsV2)
-
-# admin.site.register(Shorts)
-# admin.site.register(SubCards)
+from .models import UserModel, Cards, ShortsV2, AnswersForShortsV2, CategoriaPost, Post
 
 
-# Register your models here.
+admin.site.register([UserModel, Cards, ShortsV2,
+                    AnswersForShortsV2, CategoriaPost, Post])
