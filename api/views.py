@@ -5,7 +5,7 @@ import json
 from django.views import View
 from .models import Cards, Post, UserModel, ShortsV2, AnswersForShortsV2
 from rest_framework import viewsets
-from .serializers import ShortsV2Serializer, AnswerShortSerializer
+from .serializers import ShortsV2Serializer, AnswerShortSerializer, PostSerializer
 
 from django.http.response import JsonResponse
 # Create your views here.
@@ -117,6 +117,28 @@ class shortV2View(View):
         return JsonResponse(data)
 
 
+class PostView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        posts = list(Post.objects.values())
+        if len(posts) > 0:
+            data = {'posts': posts}
+        else:
+            data = {'message': 'post not found'}
+        return JsonResponse(data)
+
+
+class PostSet(viewsets.ModelViewSet):
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        posts = Post.objects.all()
+        return posts
+
+
 class shortV2Set(viewsets.ModelViewSet):
     serializer_class = ShortsV2Serializer
 
@@ -169,18 +191,4 @@ class userToPremium(View):
         user.premium = True
         user.save()
         data = {'message': 'user is now premium!'}
-        return JsonResponse(data)
-
-
-class PostView(View):
-    @method_decorator(csrf_exempt)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
-    def get(self, request):
-        posts = list(Post.objects.values())
-        if len(posts) > 0:
-            data = {'message': 'success', 'Posts': posts}
-        else:
-            data = {'message': 'post not found'}
         return JsonResponse(data)

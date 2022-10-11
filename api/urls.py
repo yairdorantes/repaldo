@@ -6,13 +6,14 @@ from xml.etree.ElementInclude import include
 from django.urls import path, include
 
 
-from .views import userView, cardView, getRoutes, MyTokenObtainPairView, userToPremium, shortV2Set, shortV2View, PostView
+from .views import userView, cardView, getRoutes, MyTokenObtainPairView, userToPremium, shortV2Set, shortV2View, PostView, PostSet
 
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
 router.register('shortsetV2', shortV2Set, basename="shortV2Set")
+router.register('postset', PostSet, basename="postset")
 
 urlpatterns = [
     path('users/', userView.as_view(), name='users_list'),

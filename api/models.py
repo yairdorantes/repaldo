@@ -1,7 +1,6 @@
+import os
+from django.conf import settings
 
-from email.policy import default
-from pyexpat import model
-from unicodedata import category
 from django.db import models
 # Create your models here.
 from django.contrib.auth.models import AbstractUser
@@ -71,16 +70,19 @@ class CategoriaPost(models.Model):
 
 
 class Post(models.Model):
-    categoria = models.ForeignKey(CategoriaPost, on_delete=models.CASCADE)
+    categoria = models.ForeignKey(
+        CategoriaPost, on_delete=models.CASCADE)
     image = models.FileField(upload_to="PostImage", verbose_name="Post image")
     title = models.CharField(max_length=500, verbose_name="Post title")
     intro = models.CharField(max_length=500, verbose_name="Post intro")
     content = models.TextField(blank=True, verbose_name="Post content")
     image_src = models.URLField(
         default="http://127.0.0.1:8000/", verbose_name="post image source ")
+    likes = models.IntegerField(default=0, verbose_name="post likes")
 
     def delete(self, *args, **kwargs):
         self.image.delete()
+       # os.remove(os.path.join(settings.MEDIA_ROOT, self.image))
         super().delete(*args, **kwargs)
 
     def __str__(self):
