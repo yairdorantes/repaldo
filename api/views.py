@@ -130,6 +130,27 @@ class PostView(View):
             data = {'message': 'post not found'}
         return JsonResponse(data)
 
+    def post(self, request):
+        # print(request.body)
+
+        jd = json.loads(request.body)
+      #   print(jd)
+        post = Post.objects.get(id=jd['id'])
+
+        post.likes.add(
+            User.objects.get(id=jd['user_id']))
+
+        if (jd["is_like"] == True):
+            data = {'message': 'is like yeah'}
+            post.likes_count += 1
+            post.save()
+        else:
+            post.likes_count -= 1
+            post.save()
+            data = {'message': 'test passed post'}
+
+        return JsonResponse(data)
+
 
 class PostSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer

@@ -78,7 +78,12 @@ class Post(models.Model):
     content = models.TextField(blank=True, verbose_name="Post content")
     image_src = models.URLField(
         default="http://127.0.0.1:8000/", verbose_name="post image source ")
-    likes = models.IntegerField(default=0, verbose_name="post likes")
+    # likes = models.IntegerField(default=0, verbose_name="post likes")
+    likes = models.ManyToManyField(
+        UserModel, verbose_name="Post likes", default="")
+
+    likes_count = models.IntegerField(
+        default=0, verbose_name="Post likes counter")
 
     def delete(self, *args, **kwargs):
         self.image.delete()
