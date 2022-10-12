@@ -27,5 +27,6 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('makepremium/<int:id>', userToPremium.as_view(), name='user_to_premium'),
     path('posts/', PostView.as_view(), name='posts list'),
+    path('posts/<int:id>', PostView.as_view(), name="liked posts by user"),
     path('', include(router.urls)),
 ]

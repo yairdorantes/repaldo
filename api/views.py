@@ -122,33 +122,38 @@ class PostView(View):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request):
-        posts = list(Post.objects.values())
-        if len(posts) > 0:
-            data = {'posts': posts}
+    def get(self, request, id=0):
+
+        if (id > 0):
+            liked_posts = list(Post.objects.filter(likes=id).values())
+            if len(liked_posts) > 0:
+                data = {"posts_liked_by_user": liked_posts}
+
         else:
-            data = {'message': 'post not found'}
+            posts = list(Post.objects.values())
+            if len(posts) > 0:
+                data = {'posts': posts}
+            else:
+                data = {'message': 'post not found'}
         return JsonResponse(data)
 
     def post(self, request):
         # print(request.body)
 
         jd = json.loads(request.body)
-      #   print(jd)
         post = Post.objects.get(id=jd['id'])
-
-        post.likes.add(
-            User.objects.get(id=jd['user_id']))
-
         if (jd["is_like"] == True):
-            data = {'message': 'is like yeah'}
+            post.likes.add(
+                User.objects.get(id=jd['user_id']))
+            data = {'message': 'like'}
             post.likes_count += 1
             post.save()
         else:
+            post.likes.remove(
+                User.objects.get(id=jd['user_id']))
             post.likes_count -= 1
             post.save()
-            data = {'message': 'test passed post'}
-
+            data = {'message': 'no like'}
         return JsonResponse(data)
 
 
