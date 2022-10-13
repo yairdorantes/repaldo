@@ -1,5 +1,5 @@
 
-from .models import ShortsV2, AnswersForShortsV2, CategoriaPost, Post
+from .models import Comment, ShortsV2, AnswersForShortsV2, CategoriaPost, Post
 from rest_framework import serializers
 
 
@@ -24,8 +24,11 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+##############################################
+
 class PostSerializer(serializers.ModelSerializer):
-    categoria = CategorySerializer(read_only=True)
+    categoria = CategorySerializer()
+  #  comments = CommentSerializer()
 
     class Meta:
         model = Post

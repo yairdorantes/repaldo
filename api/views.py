@@ -1,9 +1,7 @@
-from importlib.metadata import metadata
-
 
 import json
 from django.views import View
-from .models import Cards, Post, UserModel, ShortsV2, AnswersForShortsV2
+from .models import Cards, Comment, Post, UserModel, ShortsV2, AnswersForShortsV2
 from rest_framework import viewsets
 from .serializers import ShortsV2Serializer, AnswerShortSerializer, PostSerializer
 
@@ -24,6 +22,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
 from time import sleep
 
+from rest_framework.decorators import action
 
 User = get_user_model()
 
@@ -117,6 +116,22 @@ class shortV2View(View):
         return JsonResponse(data)
 
 
+class GetPostView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, id=0):
+
+        if (id > 0):
+            post = list(Post.objects.filter(id=id).values())
+
+            data = {"post": post}
+            return JsonResponse(data)
+        else:
+            return JsonResponse(None)
+
+
 class PostView(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -125,7 +140,8 @@ class PostView(View):
     def get(self, request, id=0):
 
         if (id > 0):
-            liked_posts = list(Post.objects.filter(likes=id).values())
+            liked_posts = list(Post.objects.filter(
+                likes=id).values("id"))
             if len(liked_posts) > 0:
                 data = {"posts_liked_by_user": liked_posts}
 
@@ -157,6 +173,34 @@ class PostView(View):
         return JsonResponse(data)
 
 
+class CommentView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, id=0):
+        if id > 0:
+            comments = list(Comment.objects.filter(post_id=id).values())
+
+            if len(comments) > 0:
+                data = {'comments': comments}
+            else:
+                data = {'message': 'no comments yet'}
+        else:
+            data = {'message': 'MAS POST'}
+      #  sleep(1.3)
+        return JsonResponse(data)
+
+   # @method_decorator(csrf_exempt)
+    def post(self, request):
+        jd = json.loads(request.body)
+        comment = Comment.objects.create(post_id=jd["post_id"],
+                                         author=jd["user_name"], text=jd["comentario"], created_date=jd["date"])
+        comment.save()
+        data = {'message': "success"}
+        return JsonResponse(data)
+
+
 class PostSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
 
@@ -166,6 +210,7 @@ class PostSet(viewsets.ModelViewSet):
 
 
 class shortV2Set(viewsets.ModelViewSet):
+
     serializer_class = ShortsV2Serializer
 
     def get_queryset(self):

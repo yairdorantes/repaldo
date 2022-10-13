@@ -1,9 +1,9 @@
-import os
-from django.conf import settings
-
+from datetime import datetime
 from django.db import models
 # Create your models here.
 from django.contrib.auth.models import AbstractUser
+
+from django.utils import timezone
 
 
 class UserModel(AbstractUser):
@@ -60,6 +60,8 @@ class AnswersForShortsV2(models.Model):
 class CategoriaPost(models.Model):
     name = models.CharField(
         max_length=100, null=False, unique=False, verbose_name='Category Post')
+    color = models.CharField(
+        max_length=100, verbose_name='color ategory', default='#FFFFFF')
 
     class meta:
         verbose_name = 'Category'
@@ -92,6 +94,21 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE, related_name="comments")
+    author = models.CharField(max_length=255)
+    text = models.TextField(blank=True, verbose_name="comment")
+    created_date = models.CharField(max_length=255)
+    approved_comment = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["-created_date"]
+
+    def __str__(self):
+        return self.text
 
 
 """
