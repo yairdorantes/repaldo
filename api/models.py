@@ -22,7 +22,12 @@ class Cards(models.Model):
     cardMeaning = models.CharField(max_length=50, verbose_name='Card meaning')
     cardImage = models.ImageField(verbose_name='Card image', upload_to='cards')
     imageURL = models.URLField(
+
         default="http://127.0.0.1:8000/cards/", verbose_name='Image source')
+
+    def delete(self, *args, **kwargs):
+        self.cardImage.delete()
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return self.cardTitle
@@ -36,6 +41,10 @@ class ShortsV2(models.Model):
         default="http://127.0.0.1:8000/", verbose_name='Short URL')
     translation = models.TextField(blank=True, verbose_name='Translation')
     question = models.CharField(max_length=100, verbose_name='Question')
+
+    def delete(self, *args, **kwargs):
+        self.video.delete()
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return self.short_name
