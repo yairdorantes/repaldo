@@ -185,7 +185,7 @@ class CommentView(View):
             if len(comments) > 0:
                 data = {'comments': comments}
             else:
-                data = {'message': 'no comments yet'}
+                data = {'comments': []}
         else:
             data = {'message': 'MAS POST'}
       #  sleep(1.3)

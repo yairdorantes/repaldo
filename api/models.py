@@ -76,13 +76,13 @@ class Post(models.Model):
         CategoriaPost, on_delete=models.CASCADE)
     image = models.FileField(upload_to="PostImage", verbose_name="Post image")
     title = models.CharField(max_length=500, verbose_name="Post title")
-    intro = models.CharField(max_length=500, verbose_name="Post intro")
+  #  intro = models.CharField(max_length=500, verbose_name="Post intro")
     content = models.TextField(blank=True, verbose_name="Post content")
     image_src = models.URLField(
-        default="http://127.0.0.1:8000/", verbose_name="post image source ")
+        default=f"http://127.0.0.1:8000/{image}", verbose_name="post image source ")
     # likes = models.IntegerField(default=0, verbose_name="post likes")
     likes = models.ManyToManyField(
-        UserModel, verbose_name="Post likes", default="")
+        UserModel, verbose_name="Post likes", blank=True)
 
     likes_count = models.IntegerField(
         default=0, verbose_name="Post likes counter")
@@ -103,9 +103,10 @@ class Comment(models.Model):
     text = models.TextField(blank=True, verbose_name="comment")
     created_date = models.CharField(max_length=255)
     approved_comment = models.BooleanField(default=True)
+  #  dates = models.DateTimeField(auto_now_add=True, blank=True)
 
     class Meta:
-        ordering = ["-created_date"]
+        ordering = ["-id"]
 
     def __str__(self):
         return self.text
