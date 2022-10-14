@@ -29,7 +29,7 @@ class Cards(models.Model):
 
 
 class ShortsV2(models.Model):
-    likes = models.IntegerField(verbose_name='Likes', default=0)
+    # likes = models.IntegerField(verbose_name='Likes', default=0)
     short_name = models.CharField(max_length=50, verbose_name='Short name')
     video = models.FileField(upload_to='shorts', verbose_name='VideoFile')
     short_url = models.URLField(

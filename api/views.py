@@ -4,6 +4,7 @@ from django.views import View
 from .models import Cards, Comment, Post, UserModel, ShortsV2, AnswersForShortsV2
 from rest_framework import viewsets
 from .serializers import ShortsV2Serializer, AnswerShortSerializer, PostSerializer
+from random import shuffle
 
 from django.http.response import JsonResponse
 # Create your views here.
@@ -94,11 +95,12 @@ class cardView(View):
     def get(self, request):
 
         cards = list(Cards.objects.values())
+        # cards = shuffle(cards)
         if len(cards) > 0:
             data = {'message': 'success', 'cards': cards}
         else:
             data = {'message': 'card not found'}
-      #  sleep(1.3)
+        # sleep(1.3)
         return JsonResponse(data)
 
 
